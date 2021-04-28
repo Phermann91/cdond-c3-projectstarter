@@ -44,8 +44,9 @@ jobs:
       - run:
           name: Build front-end
           command: |
-            npm i --prefix frontend
-            npm run lint --prefix frontend
+            cd frontend
+            npm i
+            npm run build
       #- persist_to_workspace:
           #root: ~/
           #paths:
@@ -64,8 +65,9 @@ jobs:
       - run:
           name: Back-end build
           command: |
-            npm i --prefix backend
-            npm run lint --prefix backend
+            cd backend
+            npm i
+            npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
