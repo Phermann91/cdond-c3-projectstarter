@@ -45,7 +45,6 @@ jobs:
           command: |
             npm i --prefix forntend
             npm run lint --prefix frontend
-            exit 1
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -62,7 +61,6 @@ jobs:
           command: |
             npm i --prefix backend
             npm run lint --prefix backend
-            exit 1
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
