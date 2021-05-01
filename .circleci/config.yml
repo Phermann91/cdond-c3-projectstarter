@@ -112,10 +112,10 @@ jobs:
       - checkout
       ## Restore from cache
       - restore_cache:
-          keys: [test-backend]
+          keys: [backend-test]
       ## Your job code here
       - run:
-          name: test-backend
+          name: backend-test
           command: |
             cd backend
             npm i
