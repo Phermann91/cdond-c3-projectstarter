@@ -266,6 +266,7 @@ jobs:
           working_directory: ./backend
           command: |
             npm i
+            npm audit fix
             npm run migrations > migration_status
 
       - run:
