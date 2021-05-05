@@ -182,7 +182,8 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --stack-name "udapeople-backend-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="prod-${CIRCLE_WORKFLOW_ID:0:7}"  
+              --parameter-overrides ID="prod-${CIRCLE_WORKFLOW_ID:0:7}"
+              --tags project=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
 
       - run:
           name: Save backend URL in memstash
@@ -200,6 +201,7 @@ jobs:
               --template-file .circleci/files/frontend.yml \
               --stack-name "udapeople-frontend-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="prod-${CIRCLE_WORKFLOW_ID:0:7}"  
+              --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -291,7 +293,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            yum install -y tar
+            yum install -y gzip
       - run:
           name: Get backend url
           command: |
@@ -399,8 +402,8 @@ workflows:
               only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      #- run-migrations:
-          #requires: [configure-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       #- deploy-frontend:
           #requires: [run-migrations]
       #- deploy-backend:
