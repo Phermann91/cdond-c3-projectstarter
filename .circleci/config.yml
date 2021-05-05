@@ -182,7 +182,7 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --stack-name "udapeople-backend-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="prod-${CIRCLE_WORKFLOW_ID:0:7}"
+              --parameter-overrides ID="prod-${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
 
       - run:
@@ -200,7 +200,7 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --stack-name "udapeople-frontend-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="prod-${CIRCLE_WORKFLOW_ID:0:7}"  
+              --parameter-overrides ID="prod-${CIRCLE_WORKFLOW_ID:0:7}" \ 
               --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
       - run:
           name: Add back-end ip to ansible inventory
@@ -284,7 +284,8 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
-      - image: amazon/aws-cli
+      # - image: amazon/aws-cli
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - checkout
@@ -293,14 +294,20 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            sudo apt-get update && sudo apt-get install -yy less
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+
             yum install -y tar
             yum install -y gzip
       - run:
           name: Get backend url
+          working_directory: ./frontend
           command: |
-            curl -H "token: 9324d78d-da6d-4e82-9fbc-32572c321362" --request GET https://api.memstash.io/values/DB_MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
-            export API_URL="http://${BACKEND_IP}:3030"
+            export API_URL = {curl -H "token: 9324d78d-da6d-4e82-9fbc-32572c321362" --request GET https://api.memstash.io/values/BACKEND_URL}
             echo "${API_URL}"
+            npm run build
       - run:
           name: Deploy frontend objects
           command: |
