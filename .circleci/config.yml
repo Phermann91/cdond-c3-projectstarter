@@ -231,22 +231,43 @@ jobs:
           command: |
               ansible-playbook -i inventory.txt configure-server.yml
 
-  #run-migrations:
-    #docker:
-      ## Docker image here that supports NodeJS
-    #steps:
-      ## Checkout code from git
-      #- run:
-          #name: Run migrations
-          #command: |
-            ## Your code here
-            #exit 1
-      #- run:
-          #name: Send migration results to memstash
-          #command: |
-            ## Your code here
-            #exit 1
-     ## Here's where you will add some code to rollback on failure      
+  run-migrations:
+    docker:
+      # Docker image here that supports NodeJS
+      - image: circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: install dependencies for migration
+          command: |
+            sudo apt-get update && sudo apt-get install -yy less
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+
+      - run:
+          name: Run migrations
+          working_directory: ./backend
+          command: |
+            npm run migrations > migration_status
+
+      - run:
+          name: Send migration results to memstash
+          working_directory: ./backend
+          command: |
+            if grep -q "has been executed successfully" migration_status
+            then
+              echo "DB migration succeeded"
+              curl -H "Content-Type: text/plain" -H "token: 9324d78d-da6d-4e82-9fbc-32572c321362" --request PUT --data "1" https://api.memstash.io/values/DB_MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
+            else
+              echo "DB migration failed"
+              curl -H "Content-Type: text/plain" -H "token: 9324d78d-da6d-4e82-9fbc-32572c321362" --request PUT --data "0" https://api.memstash.io/values/DB_MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
+            fi
+            echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
+     # Here's where you will add some code to rollback on failure      
 
   #deploy-frontend:
     #docker:
@@ -362,8 +383,8 @@ workflows:
           filters:
             branches:
               only: [master]
-      #- configure-infrastructure:
-          #requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       #- run-migrations:
           #requires: [configure-infrastructure]
       #- deploy-frontend:
