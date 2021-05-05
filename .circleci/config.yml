@@ -267,7 +267,6 @@ jobs:
           command: |
             npm i
             npm audit fix
-            echo "{{ lookup('env', 'TYPEORM_HOST') }}"
             echo "{{ lookup('env', 'TYPEORM_DATABASE') }}"
             npm run migrations > migration_status
 
