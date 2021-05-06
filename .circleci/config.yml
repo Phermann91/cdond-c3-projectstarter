@@ -347,7 +347,10 @@ jobs:
           name: Install dependencies
           working_directory: ./.circleci/ansible
           command: |
-            apk add --update ansible # install the dependencies needed for your playbook
+            apk add tar
+            apk add gzip curl
+            apk add --update ansible
+            pip install awscli
       - run:
           name: Deploy backend
           working_directory: ./.circleci/ansible
