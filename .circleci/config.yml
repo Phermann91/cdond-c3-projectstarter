@@ -235,6 +235,8 @@ jobs:
           name: Install dependencies
           working_directory: ./.circleci/ansible
           command: |
+            yum -y install tar
+            yum -y install gzip
             apk add --update ansible curl rsync openssh nodejs npm
             ansible --version
             pip install awscli
