@@ -335,10 +335,11 @@ jobs:
       # attach workspace
       - attach_workspace:
           at: .
-      #- run:
-          #name: Install dependencies
-          #command: |
-            ## your code here
+      - run:
+          name: Install dependencies
+          working_directory: ./.circleci/ansible
+          command: |
+            apk add --update ansible # install the dependencies needed for your playbook
       - run:
           name: Deploy backend
           working_directory: ./.circleci/ansible
