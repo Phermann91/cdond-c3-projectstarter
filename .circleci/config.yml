@@ -321,22 +321,29 @@ jobs:
             #- frontend/dist
       # Here's where you will add some code to rollback on failure      
                     
-  #deploy-backend:
-    #docker:
-      ## Docker image here that supports Ansible
-    #steps:
-      ## Checkout code from git
-      ## Add ssh keys with fingerprint
-      ## attach workspace
-      #- run:
-          #name: Install dependencies
-          #command: |
-            ## your code here
-      #- run:
-          #name: Deploy backend
-          #command: |
-            ## your code here
-      ## Here's where you will add some code to rollback on failure  
+  deploy-backend:
+    docker:
+      # Docker image here that supports Ansible
+      - image: python:3.7-alpine3.11
+    steps:
+      # Checkout code from git
+      - checkout
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints: ["f4:e4:5b:28:26:fd:01:9c:29:bd:48:d1:32:20:19:31"]
+      # attach workspace
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run:
+          name: Deploy backend
+          working_directory: ./.circleci/ansible
+          command: |
+              ansible-playbook -i inventory.txt deploy-backend.yml
+      # Here's where you will add some code to rollback on failure  
 
   #smoke-test:
     #docker:
