@@ -237,10 +237,10 @@ jobs:
           name: Install dependencies
           working_directory: ./.circleci/ansible
           command: |
-            apk add --update ansible curl rsync openssh nodejs npm
-            ansible --version
+            apk add tar
+            apk add gzip curl
+            apk add --update ansible
             pip install awscli
-            aws --version
       - run: cat ./.circleci/ansible/inventory.txt
       - run:
           name: Configure server
