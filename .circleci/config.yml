@@ -238,6 +238,7 @@ jobs:
             ansible --version
             pip install awscli
             aws --version
+      - run: cat ./.circleci/ansible/inventory.txt
       - run:
           name: Configure server
           working_directory: ./.circleci/ansible
