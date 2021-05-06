@@ -233,8 +233,6 @@ jobs:
       # attach workspace
       - attach_workspace:
           at: .
-      #- run: yum install -y tar
-      #- run: yum install -y gzip
       - run:
           name: Install dependencies
           working_directory: ./.circleci/ansible
