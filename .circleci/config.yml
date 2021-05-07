@@ -351,6 +351,13 @@ jobs:
             apk add --update ansible
             pip install awscli
       - run:
+          name: check existance of dist
+          working_directory: .
+          command: |
+            cd backend
+            pwd
+            ls -la
+      - run:
           name: Deploy backend
           working_directory: ./.circleci/ansible
           command: |
