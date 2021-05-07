@@ -43,10 +43,10 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build]
-      #- attach_workspace:
-          #at: .
+      #- restore_cache:
+          #keys: [frontend-build]
+      - attach_workspace:
+          at: .
       - run:
           name: Build front-end
           #working_directory: ./frontend
@@ -55,23 +55,24 @@ jobs:
             cd frontend
             npm i
             npm run build
-      #- persist_to_workspace:
-          #root: ~/
-          #paths:
-            #- project/frontend/node_modules
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - frontend/node_modules
+            - frontend/dist
+      #- save_cache:
+          #paths: [frontend/node_modules]
+          #key: frontend-build
 
   build-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      #- attach_workspace:
-          #at: .
-      - restore_cache:
-          keys: [backend-build]
+      - attach_workspace:
+          at: .
+      #- restore_cache:
+          #keys: [backend-build]
       - run:
           name: Back-end build
           #working_directory: ./backend
@@ -80,13 +81,14 @@ jobs:
             cd backend
             npm i
             npm run build
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
-      #- persist_to_workspace:
-          #root: ~/
-          #paths:
-            #- project/backend/node_modules
+      #- save_cache:
+          #paths: [backend/node_modules]
+          #key: backend-build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - backend/node_modules
+            - backend/dist
 
   test-frontend:
     docker:
