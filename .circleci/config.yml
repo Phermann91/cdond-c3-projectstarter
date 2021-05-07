@@ -356,6 +356,7 @@ jobs:
           name: check existance of dist
           working_directory: .
           command: |
+            tar czf backend.tar.gz backend/
             cd backend
             pwd
             ls -la
@@ -363,7 +364,6 @@ jobs:
           name: Deploy backend
           working_directory: ./.circleci/ansible
           command: |
-              tar czf backend.tar.gz backend/
               ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
 
