@@ -15,8 +15,8 @@ commands:
           when: << parameters.when >>
           command: |
             aws s3 rm "s3://udapeople-prod-<< parameters.when >>" --recursive
-            aws cloudformation delete-stack -stackname "udapeople-backend-prod-<< parameters.when >>"
-            aws cloudformation delete-stack -stackname "udapeople-frontend-prod-<< parameters.when >>"
+            aws cloudformation delete-stack -stackname "udapeople-backend-prod-<< parameters.id >>"
+            aws cloudformation delete-stack -stackname "udapeople-frontend-prod-<< parameters.id >>"
 
 
   revert-migrations:
@@ -34,7 +34,7 @@ commands:
           when: << parameters.when >>
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = $(curl -H "token: 9324d78d-da6d-4e82-9fbc-32572c321362" --request GET https://api.memstash.io/values/DB_MIGRATION_<< parameters.when >>)
+            SUCCESS = $(curl -H "token: 9324d78d-da6d-4e82-9fbc-32572c321362" --request GET https://api.memstash.io/values/DB_MIGRATION_<< parameters.id >>)
             echo $SUCCESS
             if(( $SUCCESS==1 )); 
             then
