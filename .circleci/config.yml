@@ -290,6 +290,7 @@ jobs:
           working_directory: ./backend
           command: |
             npm run migrations >> migration.log
+            cat migration.log
 
       - run:
           name: Send migration results to memstash
