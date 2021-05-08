@@ -12,25 +12,29 @@ commands:
     steps:
       - run:
           name: Destroy environments
-          when: on_fail
+          when: << parameters.when >>
           command: |
-            aws s3 rm "s3://udapeople-prod-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
-            aws cloudformation delete-stack -stackname "udapeople-backend-prod-${CIRCLE_WORKFLOW_ID:0:7}"
-            aws cloudformation delete-stack -stackname "udapeople-frontend-prod-${CIRCLE_WORKFLOW_ID:0:7}"
+            aws s3 rm "s3://udapeople-prod-<< parameters.when >>" --recursive
+            aws cloudformation delete-stack -stackname "udapeople-backend-prod-<< parameters.when >>"
+            aws cloudformation delete-stack -stackname "udapeople-frontend-prod-<< parameters.when >>"
 
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here     
+      # Add parameter here
+      when:
+        type: string
+      id:
+        type: string
     steps:
       - run:
           name: Revert migrations
           # Add when this will run
-          when: on_fail
+          when: << parameters.when >>
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = $(curl -H "token: 9324d78d-da6d-4e82-9fbc-32572c321362" --request GET https://api.memstash.io/values/DB_MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
+            SUCCESS = $(curl -H "token: 9324d78d-da6d-4e82-9fbc-32572c321362" --request GET https://api.memstash.io/values/DB_MIGRATION_<< parameters.when >>)
             echo $SUCCESS
             if(( $SUCCESS==1 )); 
             then
@@ -225,7 +229,9 @@ jobs:
           root: .
           paths:
             - .circleci/ansible/inventory.txt
-      - destroy-environment
+      - destroy-environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail
 
   configure-infrastructure:
     docker:
@@ -256,7 +262,9 @@ jobs:
               pwd
               cat inventory.txt
               ansible-playbook -i inventory.txt configure-server.yml
-      - destroy-environment
+      - destroy-environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail
 
   run-migrations:
     docker:
@@ -298,7 +306,9 @@ jobs:
             fi
             echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
      # Here's where you will add some code to rollback on failure      
-      - destroy-environment
+      - destroy-environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail
 
   deploy-frontend:
     docker:
@@ -336,7 +346,9 @@ jobs:
           paths:
             - frontend/dist
       # Here's where you will add some code to rollback on failure      
-      - destroy-environment
+      - destroy-environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail
                     
   deploy-backend:
     docker:
@@ -373,7 +385,9 @@ jobs:
           command: |
               ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
-      - destroy-environment
+      - destroy-environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail
 
   smoke-test:
     docker:
@@ -409,7 +423,9 @@ jobs:
               return 1
             fi
       # Here's where you will add some code to rollback on failure  
-      - destroy-environment
+      - destroy-environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}
+          when: on_fail
 
   #cloudfront-update:
     #docker:
