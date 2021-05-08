@@ -18,6 +18,7 @@ commands:
             aws cloudformation delete-stack -stackname "udapeople-backend-prod-${CIRCLE_WORKFLOW_ID:0:7}"
             aws cloudformation delete-stack -stackname "udapeople-frontend-prod-${CIRCLE_WORKFLOW_ID:0:7}"
 
+
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
@@ -26,6 +27,7 @@ commands:
       - run:
           name: Revert migrations
           # Add when this will run
+          when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             SUCCESS = $(curl -H "token: 9324d78d-da6d-4e82-9fbc-32572c321362" --request GET https://api.memstash.io/values/DB_MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
@@ -223,6 +225,7 @@ jobs:
           root: .
           paths:
             - .circleci/ansible/inventory.txt
+      - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -253,6 +256,7 @@ jobs:
               pwd
               cat inventory.txt
               ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment
 
   run-migrations:
     docker:
@@ -294,6 +298,7 @@ jobs:
             fi
             echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
      # Here's where you will add some code to rollback on failure      
+      - destroy-environment
 
   deploy-frontend:
     docker:
@@ -331,6 +336,7 @@ jobs:
           paths:
             - frontend/dist
       # Here's where you will add some code to rollback on failure      
+      - destroy-environment
                     
   deploy-backend:
     docker:
@@ -367,6 +373,7 @@ jobs:
           command: |
               ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
+      - destroy-environment
 
   smoke-test:
     docker:
@@ -394,7 +401,7 @@ jobs:
           name: Frontend smoke test.
           command: |
             # your code here
-            export URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-west-2.amazonaws.com"
+            export URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-2.amazonaws.com"
             if curl -s ${URL} | grep "Welcome"
             then
               return 0
@@ -402,6 +409,7 @@ jobs:
               return 1
             fi
       # Here's where you will add some code to rollback on failure  
+      - destroy-environment
 
   #cloudfront-update:
     #docker:
