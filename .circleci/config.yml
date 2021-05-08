@@ -15,8 +15,8 @@ commands:
           when: << parameters.when >>
           command: |
             aws s3 rm "s3://udapeople-prod-<< parameters.id >>" --recursive
-            aws cloudformation delete-stack -stackname "udapeople-backend-prod-<< parameters.id >>"
-            aws cloudformation delete-stack -stackname "udapeople-frontend-prod-<< parameters.id >>"
+            aws cloudformation delete-stack --stack-name "udapeople-backend-prod-<< parameters.id >>"
+            aws cloudformation delete-stack --stack-name "udapeople-frontend-prod-<< parameters.id >>"
 
 
   revert-migrations:
