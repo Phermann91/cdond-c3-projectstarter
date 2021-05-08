@@ -14,7 +14,7 @@ commands:
           name: Destroy environments
           when: << parameters.when >>
           command: |
-            aws s3 rm "s3://udapeople-prod-<< parameters.when >>" --recursive
+            aws s3 rm "s3://udapeople-prod-<< parameters.id >>" --recursive
             aws cloudformation delete-stack -stackname "udapeople-backend-prod-<< parameters.id >>"
             aws cloudformation delete-stack -stackname "udapeople-frontend-prod-<< parameters.id >>"
 
@@ -416,7 +416,7 @@ jobs:
           name: Frontend smoke test.
           command: |
             # your code here
-            export URL="http://udapeople-prod-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-2.amazonaws.com"
+            export URL="http://udapeople-prod-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com"
             if curl -s ${URL} | grep "Welcome"
             then
               return 0
