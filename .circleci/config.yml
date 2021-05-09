@@ -30,6 +30,7 @@ commands:
     steps:
       - run:
           name: Revert migrations
+          working_directory: ./backend
           # Add when this will run
           when: << parameters.when >>
           command: |
@@ -38,8 +39,7 @@ commands:
             echo $SUCCESS
             if [ $SUCCESS==1 ] 
             then
-              cd ~/project/backend
-              npm migrations:revert
+              npm run migrations:revert
             fi
             
 jobs:
