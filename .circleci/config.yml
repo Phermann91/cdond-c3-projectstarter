@@ -259,7 +259,7 @@ jobs:
             pip install awscli
       - run: cat ./.circleci/ansible/inventory.txt
       - run:
-          name: Configure server
+          name: Configure server and prom
           working_directory: ./.circleci/ansible
           command: |
               pwd
