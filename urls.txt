@@ -1,0 +1,5 @@
+GitHub repository [URL01]
+https://github.com/Phermann91/cdond-c3-projectstarter
+
+public URL for your S3 Bucket [URL02]
+
