@@ -1,13 +1,13 @@
 GitHub repository [URL01]
 https://github.com/Phermann91/cdond-c3-projectstarter
 
-public URL for your S3 Bucket [URL02]
+public URL for my S3 Bucket [URL02]
 http://udapeople-prod-e4f0735.s3-website-us-east-1.amazonaws.com
 
-public URL for your CloudFront distribution [URL03]
+public URL for my CloudFront distribution [URL03]
 d3nkmeauz7oqgn.cloudfront.net
 
-public URL for your back-end server in EC2 [URL04]
+public URL for my back-end server in EC2 [URL04]
 http://3.94.160.79:3030/api/status
 
 public URL to Prometheus Server [URL05]
